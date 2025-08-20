@@ -2,6 +2,7 @@ package com.booleanuk.controller;
 
 import com.booleanuk.model.Author;
 import com.booleanuk.repository.AuthorRepository;
+import com.booleanuk.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import java.util.List;
 public class AuthorController {
     @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     public AuthorController(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
@@ -60,6 +63,7 @@ public class AuthorController {
         Author author = this.authorRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")
         );
+        bookRepository.deleteAll(author.getBooks());
         this.authorRepository.delete(author);
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
