@@ -1,6 +1,8 @@
 package com.booleanuk.controller;
 
+import com.booleanuk.model.Author;
 import com.booleanuk.model.Book;
+import com.booleanuk.model.Publisher;
 import com.booleanuk.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,7 @@ public class BookController {
         this.bookRepository = bookRepository;
     }
 
-    record PostBook(String title, String genre, int author_id, int publisher_id) {};
+    record PostBook(String title, String genre, Author author, Publisher publisher) {};
 
     @GetMapping
     public List<Book> getBooks() {
@@ -29,7 +31,7 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<Book> create(@RequestBody BookController.PostBook request){
-        Book book = new Book(request.title, request.genre, request.author_id, request.publisher_id);
+        Book book = new Book(request.title, request.genre, request.author, request.publisher);
         return new ResponseEntity<>(bookRepository.save(book), HttpStatus.CREATED);
     }
 
@@ -49,8 +51,8 @@ public class BookController {
 
         book.setTitle(request.title);
         book.setGenre(request.genre);
-        book.setAuthorId(request.author_id);
-        book.setPublisherId(request.publisher_id);
+        book.setAuthor(request.author);
+        book.setPublisher(request.publisher);
 
         return new ResponseEntity<>(bookRepository.save(book), HttpStatus.CREATED);
     }
